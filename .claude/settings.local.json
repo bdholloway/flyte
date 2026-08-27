@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/bdhol/.claude/plugins/marketplaces/**)",
+      "Read(//c/Users/bdhol/.claude/plugins/**)",
+      "Bash(node -e \"const fs=require\\('fs'\\); const j=JSON.parse\\(fs.readFileSync\\(process.env.HOME+'/.claude/settings.json','utf8'\\)\\); console.log\\(Object.keys\\(j\\)\\); console.log\\('defaultMode:', j.permissions && j.permissions.defaultMode\\); console.log\\('disableAutoMode:', j.permissions && j.permissions.disableAutoMode\\); console.log\\('env keys:', j.env ? Object.keys\\(j.env\\) : 'none'\\);\")",
+      "Bash(node *)"
+    ]
+  }
+}
