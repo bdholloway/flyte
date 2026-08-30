@@ -1,0 +1,16 @@
+services:
+  flyte-server:
+    build:
+      context: .
+      target: build
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+    volumes:
+      - ./src:/app/src
+      - build-cache:/app/build
+    command: sh -c "cmake --build build/Release && ./build/Release/flyte_server"
+
+volumes:
+  build-cache:

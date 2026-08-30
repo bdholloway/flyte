@@ -17,7 +17,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(FlightStatus, {
     {FlightStatus::Cancelled, "cancelled"},
 })
 
-void to_json(nlohmann::json& j, const AirportInfo& a)
+inline void to_json(nlohmann::json& j, const AirportInfo& a)
 {
     j = nlohmann::json{
         {"code", a.code},
@@ -34,7 +34,7 @@ void to_json(nlohmann::json& j, const AirportInfo& a)
     }
 }
 
-void from_json(const nlohmann::json& j, AirportInfo& a)
+inline void from_json(const nlohmann::json& j, AirportInfo& a)
 {
     j.at("code").get_to(a.code);
     j.at("city").get_to(a.city);
@@ -43,7 +43,7 @@ void from_json(const nlohmann::json& j, AirportInfo& a)
     a.gate = j.contains("gate") ? std::optional<std::string>(j.at("gate").get<std::string>()) : std::nullopt;
 }
 
-void to_json(nlohmann::json& j, const Telemetry& t)
+inline void to_json(nlohmann::json& j, const Telemetry& t)
 {
     j = nlohmann::json{
         {"altitude", t.altitude},
@@ -54,7 +54,7 @@ void to_json(nlohmann::json& j, const Telemetry& t)
     };
 }
 
-void from_json(const nlohmann::json& j, Telemetry& t)
+inline void from_json(const nlohmann::json& j, Telemetry& t)
 {
     j.at("altitude").get_to(t.altitude);
     j.at("speed").get_to(t.speed);
@@ -63,7 +63,7 @@ void from_json(const nlohmann::json& j, Telemetry& t)
     j.at("lastUpdated").get_to(t.lastUpdated);
 }
 
-void to_json(nlohmann::json& j, const FlightEvent& e)
+inline void to_json(nlohmann::json& j, const FlightEvent& e)
 {
     j = nlohmann::json{
         {"time", e.time},
@@ -71,13 +71,13 @@ void to_json(nlohmann::json& j, const FlightEvent& e)
     };
 }
 
-void from_json(const nlohmann::json& j, FlightEvent& e)
+inline void from_json(const nlohmann::json& j, FlightEvent& e)
 {
     j.at("time").get_to(e.time);
     j.at("label").get_to(e.label);
 }
 
-void to_json(nlohmann::json& j, const FlightData& d)
+inline void to_json(nlohmann::json& j, const FlightData& d)
 {
     j = nlohmann::json{
         {"flightNumber", d.flightNumber},
@@ -99,7 +99,7 @@ void to_json(nlohmann::json& j, const FlightData& d)
         : nlohmann::json(nullptr);    
 }
 
-void from_json(const nlohmann::json& j, FlightData& d)
+inline void from_json(const nlohmann::json& j, FlightData& d)
 {
     j.at("flightNumber").get_to(d.flightNumber);
     j.at("callsign").get_to(d.callsign);
