@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.idea/
+
+server/build/
+server/CMakeUserPresets.json
+
+.env
+.env.local
+
+.DS_Store
+*.log
