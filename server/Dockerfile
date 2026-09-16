@@ -19,6 +19,8 @@ RUN cmake -S . -B build/Release \
     && cmake --build build/Release
 
 FROM debian:bookworm-slim AS runtime
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 COPY --from=build /app/build/Release/flyte_server /usr/local/bin/flyte_server
 EXPOSE 8080
 ENTRYPOINT ["/usr/local/bin/flyte_server"]
