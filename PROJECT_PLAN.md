@@ -77,17 +77,18 @@ deploy — so there's only one Conan profile to maintain (no Windows/MSVC vs.
 Linux/gcc split) and no drift between "works on my machine" and what
 actually deploys.
 
-**Deploy target: Fly.io**, and **deployed early** — as soon as the skeleton
-endpoint returns mock data, before any real API integration — rather than
-at the end. This matters specifically because the client is a **Capacitor
-mobile app**: an Android emulator can't reach `localhost` on the dev
-machine, and a physical phone can't reach `localhost` or `10.0.2.2` either.
-Deploying the trivial skeleton first turns "can my phone reach my backend"
-into a solved problem on day one, so every later phase (real schedule data,
-real telemetry, caching, fallbacks) is verified against infrastructure
-that's already known-good. (Render was considered but its free tier
-spins down on idle — a 30-60s cold start would be confusing mid-demo on a
-mobile emulator; Fly.io's free allowance stays always-on.)
+**Deploy target: TBD** (not yet chosen). The original plan called for
+**deploying early** — as soon as the skeleton endpoint returns mock data, before any
+real API integration — rather than at the end. This mattered specifically
+because the client was a **Capacitor mobile app**: an Android emulator
+can't reach `localhost` on the dev machine, and a physical phone can't
+reach `localhost` or `10.0.2.2` either. Deploying the trivial skeleton
+first would turn "can my phone reach my backend" into a solved problem on
+day one, so every later phase (real schedule data, real telemetry,
+caching, fallbacks) gets verified against infrastructure that's already
+known-good. This reasoning no longer applies as-is now that the frontend
+is React Native/Expo rather than Capacitor — revisit once a deploy target
+is picked again.
 
 **Shared types** — `server/src/models/flight_data.h` (+ `flight_data_json.h`
 for JSON (de)serialization) on the backend, `src/types/flight.ts` (Zod
@@ -101,7 +102,7 @@ safety net that catches drift between the two.
 Capacitor-wrapped React app (TanStack Query + Zod)
         │
         ▼
-  C++ proxy — cpp-httplib, Docker/Fly.io (holds API keys, merges data, caches)
+  C++ proxy — cpp-httplib, Docker (holds API keys, merges data, caches)
         │
         ├──► AeroDataBox   — schedule / gate / terminal / status
         └──► OpenSky       — live position / altitude / speed / heading
@@ -260,8 +261,8 @@ screen transition logic and all visual components stay as-is.
 - `.env` (backend only, gitignored, used for local Docker dev):
   `AERODATABOX_KEY`, `OPENSKY_CLIENT_ID`, `OPENSKY_CLIENT_SECRET`,
   `ALLOWED_ORIGINS`, `SCHEDULE_PROVIDER`, `TELEMETRY_PROVIDER`.
-- Same variables set in Fly.io's dashboard/secrets for the deployed
-  instance — never committed. `.env.example` documents the keys with
+- Same variables set in whatever deployment host's secret store, once one
+  is chosen — never committed. `.env.example` documents the keys with
   placeholder values.
 - Frontend only ever knows the backend's base URL — no third-party keys ship
   in the mobile bundle.
@@ -280,12 +281,12 @@ matters specifically for a Capacitor mobile client.
    returning a hardcoded `FlightData` JSON literal (proves the contract
    before touching real APIs). Verify locally via `docker compose up` +
    `curl`.
-3. **Deploy the skeleton to Fly.io immediately** — get
-   `https://<app>.fly.dev` working end-to-end (build, env vars, CORS,
+3. **Deploy the skeleton somewhere reachable immediately** (deploy target
+   TBD — see §4) — get it working end-to-end (build, env vars, CORS,
    health check) before any AeroDataBox/OpenSky code exists.
 4. **AeroDataBox integration** — real schedule lookup, sign up for RapidAPI
    key, replace mock schedule half. Verify with curl against the *live*
-   Fly.io URL, then redeploy.
+   deployed URL, then redeploy.
 5. **OpenSky integration** — OAuth2 client-credentials flow, callsign
    lookup, replace mock telemetry half; implement the merge step. Same
    curl-then-redeploy verification.
@@ -329,5 +330,5 @@ matters specifically for a Capacitor mobile client.
   safety net for this, not a one-time check.
 - **Capacitor's CORS origin is platform/config-dependent** — confirm the
   exact value once `capacitor.config.ts` exists rather than guessing it now.
-- **Fly.io free-tier terms shift over time** — re-verify always-on behavior
-  and usage limits at actual deploy time.
+- **No deploy target currently chosen** — whatever host is picked, re-verify
+  its free-tier/always-on terms at actual deploy time.
