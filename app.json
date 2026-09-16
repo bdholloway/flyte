@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "Flyte",
+    "slug": "flyte",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "flyte",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#080e1f",
+    "newArchEnabled": true,
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "android": {
+      "package": "com.flyte.app",
+      "edgeToEdgeEnabled": true
+    },
+    "ios": {
+      "bundleIdentifier": "com.flyte.app",
+      "supportsTablet": true
+    },
+    "plugins": [
+      "expo-asset",
+      "expo-font"
+    ]
+  }
+}
