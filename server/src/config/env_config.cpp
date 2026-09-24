@@ -24,6 +24,8 @@ EnvConfig loadEnvConfig() {
     EnvConfig cfg;
     cfg.port = std::stoi(getEnvOr("PORT", "8080"));
     cfg.aerodataboxKey = requireEnv("AERODATABOX_KEY");
+    cfg.openskyClientId = requireEnv("OPENSKY_CLIENT_ID");
+    cfg.openskyClientSecret = requireEnv("OPENSKY_CLIENT_SECRET");
     return cfg;
 }
 
