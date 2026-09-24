@@ -1,6 +1,8 @@
 #include "config/env_config.h"
 #include "models/flight_data_json.h"
 #include "services/aerodatabox_client.h"
+#include "services/merge_service.h"
+#include "services/opensky_client.h"
 
 #include <httplib.h>
 #include <nlohmann/json.hpp>
@@ -11,6 +13,8 @@ int main()
 {
     config::EnvConfig cfg = config::loadEnvConfig();
     services::AeroDataBoxClient aeroDataBox(cfg.aerodataboxKey);
+    services::OpenSkyClient openSky(cfg.openskyClientId, cfg.openskyClientSecret);
+    services::MergeService mergeService(aeroDataBox, openSky);
 
     httplib::Server svr;
 
@@ -20,10 +24,10 @@ int main()
         return httplib::Server::HandlerResponse::Unhandled;
     });
 
-    svr.Get("/flights/:flightNumber", [&aeroDataBox](const httplib::Request& req, httplib::Response& res)
+    svr.Get("/flights/:flightNumber", [&mergeService](const httplib::Request& req, httplib::Response& res)
     {
         std::string flightNumber = req.path_params.at("flightNumber");
-        std::optional<models::FlightData> data = aeroDataBox.lookupFlight(flightNumber);
+        std::optional<models::FlightData> data = mergeService.lookupFlight(flightNumber);
 
         if (!data)
         {
