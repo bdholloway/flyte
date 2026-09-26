@@ -14,17 +14,25 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { Plane, Search, AlertCircle, ChevronLeft, Star } from "lucide-react-native";
 
+import type { FlightData } from "@/types/flight";
+import { ApiError } from "@/lib/api/client";
+import { normalizeFlightNumber } from "@/lib/api/flights";
+import { useFlightSearch } from "@/lib/hooks/useFlightSearch";
+import { useLiveTelemetry } from "@/lib/hooks/useLiveTelemetry";
+import { queryClient } from "@/lib/queryClient";
 import {
-  FLIGHTS,
-  RECENT_SEARCHES,
-  SUGGESTED_CODES,
-  type FlightData,
-  type Screen,
-} from "@/data/flights";
+  loadFavorites,
+  loadRecents,
+  pushRecent,
+  saveFavorites,
+  saveRecents,
+  toSavedFlight,
+  type SavedFlight,
+} from "@/lib/savedFlights";
 import { colors } from "@/theme";
 import { StatusBadge } from "@/components/StatusBadge";
 import { FlightRow } from "@/components/FlightRow";
@@ -32,7 +40,11 @@ import { FlightDetail } from "@/components/FlightDetail";
 import { LiveTracker } from "@/components/LiveTracker";
 
 const rotate90 = { transform: [{ rotate: "90deg" }] } as const;
+type Screen = "home" | "result" | "tracker";
 const SCREENS: Screen[] = ["home", "result", "tracker"];
+
+// Real daily long-haul flights — good odds one is in the air at any hour.
+const SUGGESTED_CODES = ["SQ21", "BA178", "DL1", "QF7"];
 
 function App() {
   const { width: W } = useWindowDimensions();
@@ -41,27 +53,22 @@ function App() {
   const [screen, setScreen] = useState<Screen>("home");
   const [flight, setFlight] = useState<FlightData | null>(null);
   const [flightKey, setFlightKey] = useState<string | null>(null);
-  const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const [favorites, setFavorites] = useState<SavedFlight[]>([]);
+  const [recents, setRecents] = useState<SavedFlight[]>([]);
+
+  const { search, isSearching: searching } = useFlightSearch();
+  // Polls only while the tracker screen is showing.
+  const live = useLiveTelemetry(flightKey, screen === "tracker");
 
   const inputRef = useRef<TextInput>(null);
   const slide = useRef(new Animated.Value(0)).current;
 
-  // Load persisted favorites
+  // Load persisted favorites + recent searches
   useEffect(() => {
-    AsyncStorage.getItem("flyte-favorites").then((v) => {
-      if (!v) return;
-      try {
-        const parsed = JSON.parse(v);
-        if (Array.isArray(parsed)) setFavorites(parsed);
-      } catch {
-        // ignore corrupt value
-      }
-    });
+    loadFavorites().then(setFavorites);
+    loadRecents().then(setRecents);
   }, []);
-
-  const normalize = (s: string) => s.replace(/\s+/g, "").toUpperCase();
 
   const goTo = (s: Screen) => {
     setScreen(s);
@@ -72,35 +79,43 @@ function App() {
     }).start();
   };
 
-  const toggleFavorite = (key: string) => {
+  const isFavorite = (key: string) => favorites.some((f) => f.key === key);
+
+  const toggleFavorite = (current: FlightData) => {
+    const saved = toSavedFlight(current);
     setFavorites((prev) => {
-      const next = prev.includes(key)
-        ? prev.filter((k) => k !== key)
-        : [...prev, key];
-      AsyncStorage.setItem("flyte-favorites", JSON.stringify(next)).catch(
-        () => {}
-      );
+      const next = prev.some((f) => f.key === saved.key)
+        ? prev.filter((f) => f.key !== saved.key)
+        : [...prev, saved];
+      saveFavorites(next);
       return next;
     });
   };
 
-  const handleSearch = (raw: string) => {
-    const key = normalize(raw);
-    if (!key) return;
+  const handleSearch = async (raw: string) => {
+    const key = normalizeFlightNumber(raw);
+    if (!key || searching) return;
     Keyboard.dismiss();
-    setSearching(true);
     setSearchError(null);
-    setTimeout(() => {
-      const found = FLIGHTS[key] ?? null;
-      if (found) {
-        setFlight(found);
-        setFlightKey(key);
-        goTo("result");
-      } else {
-        setSearchError(`No flight found for "${raw.toUpperCase()}"`);
-      }
-      setSearching(false);
-    }, 700);
+    try {
+      const found = await search(key);
+      setFlight(found);
+      setFlightKey(key);
+      setRecents((prev) => {
+        const next = pushRecent(prev, toSavedFlight(found));
+        saveRecents(next);
+        return next;
+      });
+      goTo("result");
+    } catch (err) {
+      setSearchError(
+        err instanceof ApiError && err.kind === "not-found"
+          ? `No flight found for "${raw.toUpperCase()}"`
+          : err instanceof ApiError
+          ? err.message
+          : "Something went wrong. Try again."
+      );
+    }
   };
 
   const handleBack = () => {
@@ -245,50 +260,44 @@ function App() {
                     </Text>
                   </View>
                   <View className="gap-2">
-                    {favorites.map((key) => {
-                      const f = FLIGHTS[key];
-                      if (!f) return null;
-                      return (
-                        <FlightRow
-                          key={key}
-                          flight={f}
-                          variant="favorite"
-                          onPress={() => {
-                            setQuery(key);
-                            handleSearch(key);
-                          }}
-                        />
-                      );
-                    })}
+                    {favorites.map((f) => (
+                      <FlightRow
+                        key={f.key}
+                        flight={f}
+                        variant="favorite"
+                        onPress={() => {
+                          setQuery(f.key);
+                          handleSearch(f.key);
+                        }}
+                      />
+                    ))}
                   </View>
                 </View>
               ) : null}
 
               {/* Recent */}
-              <View className="mt-8">
-                <Text className="text-xs text-muted-foreground tracking-wider uppercase mb-3">
-                  Recent
-                </Text>
-                <View className="gap-2">
-                  {RECENT_SEARCHES.filter((k) => !favorites.includes(k)).map(
-                    (key) => {
-                      const f = FLIGHTS[key];
-                      if (!f) return null;
-                      return (
+              {recents.some((r) => !isFavorite(r.key)) ? (
+                <View className="mt-8">
+                  <Text className="text-xs text-muted-foreground tracking-wider uppercase mb-3">
+                    Recent
+                  </Text>
+                  <View className="gap-2">
+                    {recents
+                      .filter((r) => !isFavorite(r.key))
+                      .map((r) => (
                         <FlightRow
-                          key={key}
-                          flight={f}
+                          key={r.key}
+                          flight={r}
                           variant="recent"
                           onPress={() => {
-                            setQuery(key);
-                            handleSearch(key);
+                            setQuery(r.key);
+                            handleSearch(r.key);
                           }}
                         />
-                      );
-                    }
-                  )}
+                      ))}
+                  </View>
                 </View>
-              </View>
+              ) : null}
             </ScrollView>
           </View>
 
@@ -319,18 +328,18 @@ function App() {
                     </View>
                     <View className="flex-row items-center gap-2">
                       <Pressable
-                        onPress={() => toggleFavorite(flightKey)}
+                        onPress={() => toggleFavorite(flight)}
                         className="w-8 h-8 items-center justify-center active:scale-90"
                       >
                         <Star
                           size={18}
                           color={
-                            favorites.includes(flightKey)
+                            isFavorite(flightKey)
                               ? colors.primary
                               : colors.mutedForeground
                           }
                           fill={
-                            favorites.includes(flightKey)
+                            isFavorite(flightKey)
                               ? colors.primary
                               : "transparent"
                           }
@@ -349,7 +358,12 @@ function App() {
           {/* ---------- LIVE TRACKER ---------- */}
           <View style={{ width: W }}>
             {flight ? (
-              <LiveTracker flight={flight} onBack={handleBack} />
+              <LiveTracker
+                flight={flight}
+                live={live.data}
+                liveFailed={live.isError}
+                onBack={handleBack}
+              />
             ) : null}
           </View>
         </Animated.View>
@@ -358,4 +372,10 @@ function App() {
   );
 }
 
-export default App;
+export default function Root() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+  );
+}

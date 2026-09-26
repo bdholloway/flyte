@@ -2,11 +2,13 @@ import { View, Text } from "react-native";
 import {
   CheckCircle,
   AlertCircle,
+  Clock,
   Loader2,
+  Plane,
   X,
   type LucideIcon,
 } from "lucide-react-native";
-import type { FlightStatus } from "@/data/flights";
+import type { FlightStatus } from "@/types/flight";
 import { colors } from "@/theme";
 
 type StatusConfig = {
@@ -18,6 +20,13 @@ type StatusConfig = {
 };
 
 export const STATUS_CONFIG: Record<FlightStatus, StatusConfig> = {
+  scheduled: {
+    label: "Scheduled",
+    textClass: "text-slate-400",
+    bgClass: "bg-slate-400/10",
+    Icon: Clock,
+    iconColor: colors.slate400,
+  },
   "on-time": {
     label: "On Time",
     textClass: "text-emerald-400",
@@ -38,6 +47,13 @@ export const STATUS_CONFIG: Record<FlightStatus, StatusConfig> = {
     bgClass: "bg-sky-400/10",
     Icon: Loader2,
     iconColor: colors.sky400,
+  },
+  "en-route": {
+    label: "En Route",
+    textClass: "text-emerald-400",
+    bgClass: "bg-emerald-400/10",
+    Icon: Plane,
+    iconColor: colors.emerald400,
   },
   landed: {
     label: "Landed",
