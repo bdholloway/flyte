@@ -42,9 +42,17 @@ export const FlightDataSchema = z.object({
     events: FlightEventSchema.array()
 });
 
+// GET /flights/:flightNumber/live — polled by the live tracker screen.
+export const LiveUpdateSchema = z.object({
+    status: FlightStatusSchema,
+    progress: z.number().int(),
+    telemetry: TelemetrySchema.nullable()
+});
+
 export type FlightStatus = z.infer<typeof FlightStatusSchema>;
 export type AirportInfo = z.infer<typeof AirportInfoSchema>;
 export type Telemetry = z.infer<typeof TelemetrySchema>;
 export type FlightEvent = z.infer<typeof FlightEventSchema>;
 export type FlightData = z.infer<typeof FlightDataSchema>;
+export type LiveUpdate = z.infer<typeof LiveUpdateSchema>;
 

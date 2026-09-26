@@ -14,13 +14,15 @@ namespace services
 // Builds the final FlightData: schedule from AeroDataBox, then (only if the
 // flight is airborne) telemetry from OpenSky, with etaMinutes computed from
 // the AeroDataBox arrival time since OpenSky has no ETA of its own.
-// Both upstream calls sit behind a TTL cache to stay inside the free tiers.
+// Both upstream calls sit behind a TTL cache to stay inside the free tiers,
+// which is what makes the frequently polled /live endpoint cheap.
 class MergeService
 {
 
 public:
     MergeService(const AeroDataBoxClient& schedule, const OpenSkyClient& telemetry);
     std::optional<models::FlightData> lookupFlight(const std::string& flightNumber) const;
+    std::optional<models::LiveUpdate> lookupLive(const std::string& flightNumber) const;
 
 private:
     std::optional<FlightSchedule> cachedSchedule(const std::string& flightNumber) const;

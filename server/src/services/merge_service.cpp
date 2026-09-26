@@ -83,5 +83,15 @@ std::optional<models::FlightData> MergeService::lookupFlight(const std::string& 
     return data;
 }
 
+std::optional<models::LiveUpdate> MergeService::lookupLive(const std::string& flightNumber) const
+{
+    // Same merge as a full lookup: while polling, the schedule is almost always a
+    // 45s cache hit and only telemetry (5s TTL) actually goes upstream.
+    std::optional<models::FlightData> data = lookupFlight(flightNumber);
+    if (!data) return std::nullopt;
+
+    return models::LiveUpdate{data->status, data->progress, std::move(data->telemetry)};
+}
+
 
 } // end namespace services

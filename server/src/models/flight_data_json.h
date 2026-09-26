@@ -120,6 +120,26 @@ inline void from_json(const nlohmann::json& j, FlightData& d)
     d.telemetry = telemetryJson.is_null() ? std::nullopt : std::optional<Telemetry>(telemetryJson.get<Telemetry>());
 }
 
+inline void to_json(nlohmann::json& j, const LiveUpdate& u)
+{
+    j = nlohmann::json{
+        {"status", u.status},
+        {"progress", u.progress},
+    };
+    j["telemetry"] = u.telemetry.has_value()
+        ? nlohmann::json(*u.telemetry)
+        : nlohmann::json(nullptr);
+}
+
+inline void from_json(const nlohmann::json& j, LiveUpdate& u)
+{
+    j.at("status").get_to(u.status);
+    j.at("progress").get_to(u.progress);
+
+    const auto& telemetryJson = j.at("telemetry");
+    u.telemetry = telemetryJson.is_null() ? std::nullopt : std::optional<Telemetry>(telemetryJson.get<Telemetry>());
+}
+
 } // end namespace models
 
 #endif
