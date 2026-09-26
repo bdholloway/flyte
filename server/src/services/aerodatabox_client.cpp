@@ -75,13 +75,17 @@ std::optional<std::string> computeDelay(std::optional<std::chrono::system_clock:
     return out + std::to_string(diff % 60) + "m"; // bare duration, e.g. "1h 5m" — the UI supplies the wording
 }
 
-int computeProgress(models::FlightStatus status,
+// dep/arr should be the best-known times (actual takeoff, live arrival estimate),
+// not the schedule, so delayed flights don't read as further along than they are.
+int computeProgress(models::FlightStatus status, bool airborne,
                      std::optional<std::chrono::system_clock::time_point> dep,
                      std::optional<std::chrono::system_clock::time_point> arr) {
     using models::FlightStatus;
     if (status == FlightStatus::Landed) return 100;
-    if (status != FlightStatus::Enroute) return 0;
-    if (!dep || !arr || *arr <= *dep) return 50; // can't compute — reasonable midpoint fallback
+    if (!airborne) return 0;
+    // Airborne but no usable times: report 0 rather than invent a position.
+    // The UI shows an airborne flight at 0% as "progress unavailable".
+    if (!dep || !arr || *arr <= *dep) return 0;
     auto now = std::chrono::system_clock::now();
     auto total = std::chrono::duration_cast<std::chrono::minutes>(*arr - *dep).count();
     auto elapsed = std::clamp(std::chrono::duration_cast<std::chrono::minutes>(now - *dep).count(), 0L, total);
@@ -220,6 +224,8 @@ std::optional<FlightSchedule> AeroDataBoxClient::lookupFlight(const std::string&
         auto depScheduled = parseUtc(legTime(dep, "scheduledTime", "utc"));
         auto arrScheduled = parseUtc(legTime(arr, "scheduledTime", "utc"));
         auto depRevised = parseUtc(legTime(dep, "revisedTime", "utc"));
+        // runwayTime is the actual takeoff once it has happened.
+        auto depBestEstimate = parseUtc(firstLegTime(dep, {"runwayTime", "revisedTime", "scheduledTime"}, "utc"));
         // predictedTime is AeroDataBox's live estimate, so it's the best source for ETA.
         auto arrBestEstimate = parseUtc(firstLegTime(arr, {"predictedTime", "revisedTime", "scheduledTime"}, "utc"));
 
@@ -230,14 +236,15 @@ std::optional<FlightSchedule> AeroDataBoxClient::lookupFlight(const std::string&
         }
 
         data.date = formatDisplayDate(firstLegTime(dep, {"scheduledTime", "revisedTime"}, "local"));
-        data.progress = computeProgress(data.status, depScheduled, arrScheduled);
+        bool airborne = isAirborne(rawStatus);
+        data.progress = computeProgress(data.status, airborne, depBestEstimate, arrBestEstimate);
         data.telemetry = std::nullopt; // filled in by merge_service when airborne
         data.events = {};
 
         FlightSchedule schedule;
         schedule.flight = std::move(data);
         schedule.arrivalUtc = arrBestEstimate;
-        schedule.airborne = isAirborne(rawStatus);
+        schedule.airborne = airborne;
         return schedule;
     } catch (const nlohmann::json::exception& e) {
         std::cerr << "[AeroDataBoxClient] response shape unexpected: " << e.what() << std::endl;
