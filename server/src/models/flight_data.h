@@ -61,6 +61,16 @@ struct FlightData
     std::vector<FlightEvent> events;
 };
 
+// Response of GET /flights/:flightNumber/live — the slice of FlightData the
+// live tracker polls. status lets the UI tell "landed" apart from "airborne
+// but no ADS-B coverage", since telemetry is null in both cases.
+struct LiveUpdate
+{
+    FlightStatus status;
+    int progress;
+    std::optional<Telemetry> telemetry;
+};
+
 
 } //end namespace models
 
