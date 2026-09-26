@@ -11,7 +11,7 @@ import Svg, {
   Stop,
   Text as SvgText,
 } from "react-native-svg";
-import type { FlightData } from "@/data/flights";
+import type { FlightData } from "@/types/flight";
 
 // Quadratic bezier helpers
 function qBezierPoint(
@@ -87,8 +87,14 @@ export function AviationMap({
   const traveled = (Math.max(0, Math.min(100, progress)) / 100) * pathLen;
 
   return (
-    <View className="rounded-2xl overflow-hidden border border-border bg-[#060c1a]">
-      <Svg width="100%" height="100%" viewBox="0 0 360 160" style={{ aspectRatio: 360 / 160 }}>
+    // The wrapper owns the size (full width, height from the aspect ratio) and
+    // the SVG just fills it. A percentage height on the Svg itself has nothing
+    // to resolve against inside a ScrollView and blows up to screen size.
+    <View
+      className="w-full rounded-2xl overflow-hidden border border-border bg-[#060c1a]"
+      style={{ aspectRatio: 360 / 160 }}
+    >
+      <Svg width="100%" height="100%" viewBox="0 0 360 160">
         {/* Grid */}
         {[32, 64, 96, 128].map((y) => (
           <Line key={`h${y}`} x1={0} y1={y} x2={360} y2={y} stroke="white" strokeOpacity={0.04} strokeWidth={1} />

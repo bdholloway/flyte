@@ -1,6 +1,6 @@
 import { View, Text, Pressable } from "react-native";
 import { Plane, MapPin, ArrowRight, AlertCircle } from "lucide-react-native";
-import type { AirportInfo, FlightData } from "@/data/flights";
+import type { AirportInfo, FlightData } from "@/types/flight";
 import { colors } from "@/theme";
 import { PulseDot } from "./PulseDot";
 
@@ -18,11 +18,11 @@ function EndpointCard({ label, info }: { label: string; info: AirportInfo }) {
       <View className="mt-2 gap-1">
         <View className="flex-row items-center gap-1.5">
           <MapPin size={10} color={colors.primary} />
-          <Text className="text-xs text-muted-foreground">Terminal {info.terminal}</Text>
+          <Text className="text-xs text-muted-foreground">Terminal {info.terminal ?? "—"}</Text>
         </View>
         <View className="flex-row items-center gap-1.5">
           <ArrowRight size={10} color={colors.primary} />
-          <Text className="text-xs text-muted-foreground">Gate {info.gate}</Text>
+          <Text className="text-xs text-muted-foreground">Gate {info.gate ?? "—"}</Text>
         </View>
       </View>
     </View>
@@ -48,8 +48,13 @@ export function FlightDetail({
   onTrack: () => void;
 }) {
   const landed = flight.status === "landed";
-  const delayedOnGround = flight.status === "delayed" && flight.progress === 0;
-  const canTrack = flight.progress > 0 && !landed;
+  // "Departed" comes back from the backend as on-time/delayed with progress 0,
+  // so live telemetry is also a reason to allow tracking.
+  const canTrack =
+    !landed &&
+    flight.status !== "cancelled" &&
+    (flight.progress > 0 || flight.status === "en-route" || flight.telemetry !== null);
+  const delayedOnGround = flight.status === "delayed" && !canTrack;
   const label = landed
     ? `Arrived ${flight.arrival.time}`
     : delayedOnGround

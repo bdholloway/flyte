@@ -72,7 +72,7 @@ std::optional<std::string> computeDelay(std::optional<std::chrono::system_clock:
     if (diff <= 10) return std::nullopt; // not meaningfully delayed
     std::string out;
     if (diff / 60 > 0) out += std::to_string(diff / 60) + "h ";
-    return out + std::to_string(diff % 60) + "m delayed";
+    return out + std::to_string(diff % 60) + "m"; // bare duration, e.g. "1h 5m" — the UI supplies the wording
 }
 
 int computeProgress(models::FlightStatus status,
