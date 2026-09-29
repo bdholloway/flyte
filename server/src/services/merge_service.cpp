@@ -9,7 +9,7 @@ namespace services
 
 namespace {
 
-// Per PROJECT_PLAN.md: schedules barely change minute to minute, positions do.
+// Schedules barely change minute to minute; positions do.
 constexpr auto kScheduleTtl = std::chrono::seconds(45);
 constexpr auto kTelemetryTtl = std::chrono::seconds(5);
 
