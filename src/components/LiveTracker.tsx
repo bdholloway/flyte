@@ -241,7 +241,7 @@ export function LiveTracker({
               {flight.departure.code}
             </Text>
             <Text className="text-xs text-muted-foreground font-mono">
-              {progress}%
+              {inFlight && progress === 0 ? "—" : `${progress}%`}
             </Text>
             <Text className="text-xs text-muted-foreground">
               {flight.arrival.code}

@@ -137,18 +137,20 @@ export function FlightDetail({
 
         <View className="flex-row justify-between mt-1">
           <Text className="text-xs text-muted-foreground">
-            {flight.progress === 0
-              ? "At gate"
-              : flight.progress === 100
+            {flight.progress === 100
               ? "Landed"
-              : "En route"}
+              : flight.progress > 0 || canTrack
+              ? "En route"
+              : "At gate"}
           </Text>
           <Text className="text-xs text-muted-foreground">
             {flight.progress === 100
               ? "Arrived"
-              : flight.progress === 0
-              ? "Awaiting departure"
-              : `${flight.progress}% complete`}
+              : flight.progress > 0
+              ? `${flight.progress}% complete`
+              : canTrack
+              ? "Progress unavailable" // airborne, but the backend had no times to compute it
+              : "Awaiting departure"}
           </Text>
         </View>
       </View>
