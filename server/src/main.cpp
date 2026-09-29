@@ -18,12 +18,6 @@ int main()
 
     httplib::Server svr;
 
-    svr.set_pre_routing_handler([](const httplib::Request& req, httplib::Response& res)
-    {
-        res.set_header("Access-Control-Allow-Origin", "http://localhost:5173");
-        return httplib::Server::HandlerResponse::Unhandled;
-    });
-
     svr.Get("/flights/:flightNumber", [&mergeService](const httplib::Request& req, httplib::Response& res)
     {
         std::string flightNumber = req.path_params.at("flightNumber");

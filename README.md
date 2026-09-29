@@ -108,13 +108,14 @@ Flyte/
     ├── conanfile.py, CMakeLists.txt
     ├── .env.example
     └── src/
-        ├── main.cpp                         routes + CORS
+        ├── main.cpp                         routes
         ├── config/env_config.*              reads PORT and the API credentials
         ├── models/flight_data.h             C++ structs: the API contract, server side
         ├── models/flight_data_json.h        JSON serializers (must mirror src/types/flight.ts)
         ├── services/aerodatabox_client.*    schedule lookup + status/time mapping
         ├── services/opensky_client.*        OAuth2 token cache + position lookup
         ├── services/merge_service.*         combines both, computes ETA, owns the caches
+        ├── services/http_client.*           shared libcurl GET / form-POST helpers
         └── cache/ttl_cache.h                generic thread-safe TTL cache
 ```
 
@@ -265,7 +266,8 @@ Deployment → Build Tools → Gradle → Gradle JDK → 21**.
 
 ```bash
 npm install
-npx expo prebuild            # generates android/ (use --clean to regenerate from scratch)
+npx expo prebuild            # generates android/
+# npm run prebuild:clean     # wipes and regenerates android/ from scratch
 ```
 
 Then create `android/local.properties` pointing at your SDK. It's required, and
