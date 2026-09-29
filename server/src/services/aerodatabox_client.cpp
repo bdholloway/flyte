@@ -1,6 +1,6 @@
 #include "aerodatabox_client.h"
+#include "http_client.h"
 
-#include <curl/curl.h>
 #include <nlohmann/json.hpp>
 
 #include <algorithm>
@@ -14,41 +14,6 @@
 namespace services {
 
 namespace {
-
-size_t writeCallback(char* ptr, size_t size, size_t nmemb, void* userdata) {
-    static_cast<std::string*>(userdata)->append(ptr, size * nmemb);
-    return size * nmemb;
-}
-
-std::optional<std::string> httpGet(const std::string& url, const std::string& apiKey) {
-    CURL* curl = curl_easy_init();
-    if (!curl) return std::nullopt;
-
-    std::string body;
-    struct curl_slist* headers = nullptr;
-    headers = curl_slist_append(headers, "x-rapidapi-host: aerodatabox.p.rapidapi.com");
-    std::string keyHeader = "x-rapidapi-key: " + apiKey;
-    headers = curl_slist_append(headers, keyHeader.c_str());
-
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &body);
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
-
-    CURLcode res = curl_easy_perform(curl);
-    long httpCode = 0;
-    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
-    curl_slist_free_all(headers);
-    curl_easy_cleanup(curl);
-
-    if (res != CURLE_OK || httpCode != 200) {
-        std::cerr << "[AeroDataBoxClient] request failed: curl=" << curl_easy_strerror(res)
-                  << " httpCode=" << httpCode << " body=" << body << std::endl;
-        return std::nullopt;
-    }
-    return body;
-}
 
 std::optional<std::chrono::system_clock::time_point> parseUtc(const std::string& s) {
     std::tm tm{};
@@ -184,7 +149,9 @@ std::optional<FlightSchedule> AeroDataBoxClient::lookupFlight(const std::string&
     std::string url = "https://aerodatabox.p.rapidapi.com/flights/number/" + flightNumber +
                        "?withAircraftImage=false&withLocation=false&withFlightPlan=false";
 
-    auto body = httpGet(url, apiKey_);
+    auto body = http::get(url,
+                          {"x-rapidapi-host: aerodatabox.p.rapidapi.com", "x-rapidapi-key: " + apiKey_},
+                          "[AeroDataBoxClient] request");
     if (!body) return std::nullopt;
 
     try {
