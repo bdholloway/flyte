@@ -15,6 +15,9 @@ Everything the app shows comes from those two APIs. There is no mock data.
 Android emulator. The backend isn't hosted anywhere; you start it by hand
 (see [Run the backend](#1-run-the-backend)).
 
+**Architecture docs** with diagrams live in [`doc/`](doc/README.md):
+[server](doc/server.md) and [frontend](doc/frontend.md).
+
 ---
 
 ## Contents
@@ -86,6 +89,7 @@ Flyte/
 ├── babel.config.js, metro.config.js
 ├── tailwind.config.js, global.css   NativeWind (Tailwind classes in RN)
 ├── package.json                 see the "load-bearing" note in Getting started
+├── doc/                         architecture docs (server + frontend, with diagrams)
 ├── src/
 │   ├── App.tsx                  screen state machine: Home → Result → Live tracker
 │   ├── theme.ts                 raw colours for icons / SVG
