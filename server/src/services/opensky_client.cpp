@@ -1,6 +1,6 @@
 #include "opensky_client.h"
+#include "http_client.h"
 
-#include <curl/curl.h>
 #include <nlohmann/json.hpp>
 
 #include <algorithm>
@@ -11,70 +11,7 @@
 namespace services
 {
 
-    namespace {
-
-size_t writeCallback(char* ptr, size_t size, size_t nmemb, void* userdata) {
-    static_cast<std::string*>(userdata)->append(ptr, size * nmemb);
-    return size * nmemb;
-}
-
-std::optional<std::string> httpPostForm(const std::string& url, const std::string& body) {
-    CURL* curl = curl_easy_init();
-    if (!curl) return std::nullopt;
-
-    std::string response;
-    struct curl_slist* headers = nullptr;
-    headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
-
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
-
-    CURLcode res = curl_easy_perform(curl);
-    long httpCode = 0;
-    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
-    curl_slist_free_all(headers);
-    curl_easy_cleanup(curl);
-
-    if (res != CURLE_OK || httpCode != 200) {
-        std::cerr << "[OpenSkyClient] token request failed: curl=" << curl_easy_strerror(res)
-                  << " httpCode=" << httpCode << " body=" << response << std::endl;
-        return std::nullopt;
-    }
-    return response;
-}
-
-std::optional<std::string> httpGetAuth(const std::string& url, const std::string& token) {
-    CURL* curl = curl_easy_init();
-    if (!curl) return std::nullopt;
-
-    std::string body;
-    struct curl_slist* headers = nullptr;
-    std::string authHeader = "Authorization: Bearer " + token;
-    headers = curl_slist_append(headers, authHeader.c_str());
-
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &body);
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
-
-    CURLcode res = curl_easy_perform(curl);
-    long httpCode = 0;
-    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
-    curl_slist_free_all(headers);
-    curl_easy_cleanup(curl);
-
-    if (res != CURLE_OK || httpCode != 200) {
-        std::cerr << "[OpenSkyClient] states request failed: curl=" << curl_easy_strerror(res)
-                  << " httpCode=" << httpCode << " body=" << body << std::endl;
-        return std::nullopt;
-    }
-    return body;
-}
+namespace {
 
 // states[i] is a heterogeneous array per the OpenSky states/all schema; several
 // fields (altitude, velocity, track...) can be JSON null when the aircraft isn't
@@ -91,16 +28,6 @@ std::string formatIso8601(std::time_t t) {
     char buf[32];
     std::strftime(buf, sizeof(buf), "%Y-%m-%dT%H:%M:%SZ", &tm);
     return buf;
-}
-
-std::string urlEncode(const std::string& value) {
-    CURL* curl = curl_easy_init();
-    if (!curl) return value;
-    char* escaped = curl_easy_escape(curl, value.c_str(), static_cast<int>(value.length()));
-    std::string result = escaped ? escaped : value;
-    if (escaped) curl_free(escaped);
-    curl_easy_cleanup(curl);
-    return result;
 }
 
 } // anonymous namespace
@@ -122,12 +49,12 @@ std::string OpenSkyClient::getAccessToken() const
         }
     }
 
-    std::string body = "grant_type=client_credentials&client_id=" + urlEncode(clientId_) +
-                        "&client_secret=" + urlEncode(clientSecret_);
+    std::string body = "grant_type=client_credentials&client_id=" + http::urlEncode(clientId_) +
+                        "&client_secret=" + http::urlEncode(clientSecret_);
 
-    auto response = httpPostForm(
+    auto response = http::postForm(
         "https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token",
-        body);
+        body, "[OpenSkyClient] token request");
     if (!response) {
         return "";
     }
@@ -155,7 +82,7 @@ std::optional<models::Telemetry> OpenSkyClient::lookupTelemetry(const std::strin
                     [](unsigned char c) { return std::tolower(c); });
 
     std::string url = "https://opensky-network.org/api/states/all?icao24=" + lower;
-    auto body = httpGetAuth(url, token);
+    auto body = http::get(url, {"Authorization: Bearer " + token}, "[OpenSkyClient] states request");
     if (!body) return std::nullopt;
 
     try {

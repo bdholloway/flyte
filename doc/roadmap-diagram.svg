@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3b4763"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#0b1633" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+  <rect width="1920" height="1080" fill="#ffffff"/>
+  <text x="100" y="105" font-size="54" font-weight="700" fill="#0b1633">How We Built Flyte</text>
+  <text x="100" y="152" font-size="28" fill="#5b6780">From a Figma mock-up to live flight tracking · Aug 26 → Sep 29, 2026</text>
+  <circle cx="1330" cy="100" r="11" fill="#f5a623"/>
+  <text x="1350" y="109" font-size="24" fill="#0b1633">App</text>
+  <circle cx="1440" cy="100" r="11" fill="#2f6fd0"/>
+  <text x="1460" y="109" font-size="24" fill="#0b1633">Server</text>
+  <circle cx="1575" cy="100" r="11" fill="#1fa37a"/>
+  <text x="1595" y="109" font-size="24" fill="#0b1633">Both</text>
+  <circle cx="1690" cy="100" r="11" fill="#7a5cc7"/>
+  <text x="1710" y="109" font-size="24" fill="#0b1633">Project</text>
+  <path d="M 160 250 H 1800 Q 1860 250 1860 310 V 560 Q 1860 620 1800 620 H 740" fill="none" stroke="#3b4763" stroke-width="5" stroke-linecap="round"/>
+  <path d="M 740 620 H 150" fill="none" stroke="#3b4763" stroke-width="5" stroke-linecap="round" stroke-dasharray="4 14" marker-end="url(#arrow)"/>
+  <line x1="300.0" y1="276" x2="300.0" y2="292" stroke="#f5a623" stroke-width="3"/>
+  <g filter="url(#shadow)"><rect x="100.0" y="292" width="400" height="250" rx="22" fill="#fff8ea" stroke="#c5cde0" stroke-width="2"/></g>
+  <rect x="100.0" y="292" width="12" height="250" rx="6" fill="#f5a623"/>
+  <text x="140.0" y="338" font-size="22" font-weight="600" fill="#f5a623" letter-spacing="1">AUG 26</text>
+  <text x="140.0" y="384" font-size="33" font-weight="700" fill="#0b1633">UI prototype</text>
+  <circle cx="146.0" cy="424" r="4.5" fill="#f5a623"/>
+  <text x="162.0" y="432" font-size="24" fill="#26324d">Figma design → React web</text>
+  <circle cx="146.0" cy="464" r="4.5" fill="#f5a623"/>
+  <text x="162.0" y="472" font-size="24" fill="#26324d">Search, result &amp; tracker</text>
+  <circle cx="146.0" cy="504" r="4.5" fill="#f5a623"/>
+  <text x="162.0" y="512" font-size="24" fill="#26324d">Mock data only</text>
+  <circle cx="300.0" cy="250" r="26" fill="#f5a623" stroke="#f5a623" stroke-width="4"/>
+  <text x="300.0" y="260" font-size="28" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+  <line x1="740.0" y1="276" x2="740.0" y2="292" stroke="#2f6fd0" stroke-width="3"/>
+  <g filter="url(#shadow)"><rect x="540.0" y="292" width="400" height="250" rx="22" fill="#eef3fc" stroke="#c5cde0" stroke-width="2"/></g>
+  <rect x="540.0" y="292" width="12" height="250" rx="6" fill="#2f6fd0"/>
+  <text x="580.0" y="338" font-size="22" font-weight="600" fill="#2f6fd0" letter-spacing="1">AUG 29</text>
+  <text x="580.0" y="384" font-size="33" font-weight="700" fill="#0b1633">Foundation</text>
+  <circle cx="586.0" cy="424" r="4.5" fill="#2f6fd0"/>
+  <text x="602.0" y="432" font-size="24" fill="#26324d">Data model: C++ + Zod</text>
+  <circle cx="586.0" cy="464" r="4.5" fill="#2f6fd0"/>
+  <text x="602.0" y="472" font-size="24" fill="#26324d">C++ server: cpp-httplib</text>
+  <circle cx="586.0" cy="504" r="4.5" fill="#2f6fd0"/>
+  <text x="602.0" y="512" font-size="24" fill="#26324d">Conan + Docker build</text>
+  <circle cx="740.0" cy="250" r="26" fill="#2f6fd0" stroke="#2f6fd0" stroke-width="4"/>
+  <text x="740.0" y="260" font-size="28" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+  <line x1="1180.0" y1="276" x2="1180.0" y2="292" stroke="#2f6fd0" stroke-width="3"/>
+  <g filter="url(#shadow)"><rect x="980.0" y="292" width="400" height="250" rx="22" fill="#eef3fc" stroke="#c5cde0" stroke-width="2"/></g>
+  <rect x="980.0" y="292" width="12" height="250" rx="6" fill="#2f6fd0"/>
+  <text x="1020.0" y="338" font-size="22" font-weight="600" fill="#2f6fd0" letter-spacing="1">EARLY SEP</text>
+  <text x="1020.0" y="384" font-size="33" font-weight="700" fill="#0b1633">Schedule data</text>
+  <circle cx="1026.0" cy="424" r="4.5" fill="#2f6fd0"/>
+  <text x="1042.0" y="432" font-size="24" fill="#26324d">AeroDataBox integration</text>
+  <circle cx="1026.0" cy="464" r="4.5" fill="#2f6fd0"/>
+  <text x="1042.0" y="472" font-size="24" fill="#26324d">Status, times &amp; gates</text>
+  <circle cx="1026.0" cy="504" r="4.5" fill="#2f6fd0"/>
+  <text x="1042.0" y="512" font-size="24" fill="#26324d">Deployed, then dropped Fly.io</text>
+  <circle cx="1180.0" cy="250" r="26" fill="#2f6fd0" stroke="#2f6fd0" stroke-width="4"/>
+  <text x="1180.0" y="260" font-size="28" font-weight="700" fill="#ffffff" text-anchor="middle">3</text>
+  <line x1="1620.0" y1="276" x2="1620.0" y2="292" stroke="#f5a623" stroke-width="3"/>
+  <g filter="url(#shadow)"><rect x="1420.0" y="292" width="400" height="250" rx="22" fill="#fff8ea" stroke="#c5cde0" stroke-width="2"/></g>
+  <rect x="1420.0" y="292" width="12" height="250" rx="6" fill="#f5a623"/>
+  <text x="1460.0" y="338" font-size="22" font-weight="600" fill="#f5a623" letter-spacing="1">SEP 9 – 15</text>
+  <text x="1460.0" y="384" font-size="33" font-weight="700" fill="#0b1633">Mobile rewrite</text>
+  <circle cx="1466.0" cy="424" r="4.5" fill="#f5a623"/>
+  <text x="1482.0" y="432" font-size="24" fill="#26324d">React web → React Native</text>
+  <circle cx="1466.0" cy="464" r="4.5" fill="#f5a623"/>
+  <text x="1482.0" y="472" font-size="24" fill="#26324d">Expo, runs on Android</text>
+  <circle cx="1466.0" cy="504" r="4.5" fill="#f5a623"/>
+  <text x="1482.0" y="512" font-size="24" fill="#26324d">Fixed Android toolchain</text>
+  <circle cx="1620.0" cy="250" r="26" fill="#f5a623" stroke="#f5a623" stroke-width="4"/>
+  <text x="1620.0" y="260" font-size="28" font-weight="700" fill="#ffffff" text-anchor="middle">4</text>
+  <line x1="1620.0" y1="646" x2="1620.0" y2="662" stroke="#2f6fd0" stroke-width="3"/>
+  <g filter="url(#shadow)"><rect x="1420.0" y="662" width="400" height="250" rx="22" fill="#eef3fc" stroke="#c5cde0" stroke-width="2"/></g>
+  <rect x="1420.0" y="662" width="12" height="250" rx="6" fill="#2f6fd0"/>
+  <text x="1460.0" y="708" font-size="22" font-weight="600" fill="#2f6fd0" letter-spacing="1">SEP 24</text>
+  <text x="1460.0" y="754" font-size="33" font-weight="700" fill="#0b1633">Live data</text>
+  <circle cx="1466.0" cy="794" r="4.5" fill="#2f6fd0"/>
+  <text x="1482.0" y="802" font-size="24" fill="#26324d">OpenSky OAuth2 + positions</text>
+  <circle cx="1466.0" cy="834" r="4.5" fill="#2f6fd0"/>
+  <text x="1482.0" y="842" font-size="24" fill="#26324d">Merge service: ETA, progress</text>
+  <circle cx="1466.0" cy="874" r="4.5" fill="#2f6fd0"/>
+  <text x="1482.0" y="882" font-size="24" fill="#26324d">Caching (45 s / 5 s)</text>
+  <circle cx="1620.0" cy="620" r="26" fill="#2f6fd0" stroke="#2f6fd0" stroke-width="4"/>
+  <text x="1620.0" y="630" font-size="28" font-weight="700" fill="#ffffff" text-anchor="middle">5</text>
+  <line x1="1180.0" y1="646" x2="1180.0" y2="662" stroke="#1fa37a" stroke-width="3"/>
+  <g filter="url(#shadow)"><rect x="980.0" y="662" width="400" height="250" rx="22" fill="#eaf7f2" stroke="#c5cde0" stroke-width="2"/></g>
+  <rect x="980.0" y="662" width="12" height="250" rx="6" fill="#1fa37a"/>
+  <text x="1020.0" y="708" font-size="22" font-weight="600" fill="#1fa37a" letter-spacing="1">SEP 25</text>
+  <text x="1020.0" y="754" font-size="33" font-weight="700" fill="#0b1633">App meets server</text>
+  <circle cx="1026.0" cy="794" r="4.5" fill="#1fa37a"/>
+  <text x="1042.0" y="802" font-size="24" fill="#26324d">/live polling endpoint</text>
+  <circle cx="1026.0" cy="834" r="4.5" fill="#1fa37a"/>
+  <text x="1042.0" y="842" font-size="24" fill="#26324d">TanStack Query + Zod</text>
+  <circle cx="1026.0" cy="874" r="4.5" fill="#1fa37a"/>
+  <text x="1042.0" y="882" font-size="24" fill="#26324d">Mock data removed</text>
+  <circle cx="1180.0" cy="620" r="26" fill="#1fa37a" stroke="#1fa37a" stroke-width="4"/>
+  <text x="1180.0" y="630" font-size="28" font-weight="700" fill="#ffffff" text-anchor="middle">6</text>
+  <line x1="740.0" y1="646" x2="740.0" y2="662" stroke="#7a5cc7" stroke-width="3"/>
+  <g filter="url(#shadow)"><rect x="540.0" y="662" width="400" height="250" rx="22" fill="#f3effb" stroke="#c5cde0" stroke-width="2"/></g>
+  <rect x="540.0" y="662" width="12" height="250" rx="6" fill="#7a5cc7"/>
+  <text x="580.0" y="708" font-size="22" font-weight="600" fill="#7a5cc7" letter-spacing="1">SEP 29</text>
+  <text x="580.0" y="754" font-size="33" font-weight="700" fill="#0b1633">Polish</text>
+  <circle cx="586.0" cy="794" r="4.5" fill="#7a5cc7"/>
+  <text x="602.0" y="802" font-size="24" fill="#26324d">Honest progress values</text>
+  <circle cx="586.0" cy="834" r="4.5" fill="#7a5cc7"/>
+  <text x="602.0" y="842" font-size="24" fill="#26324d">Code cleanup</text>
+  <circle cx="586.0" cy="874" r="4.5" fill="#7a5cc7"/>
+  <text x="602.0" y="882" font-size="24" fill="#26324d">README + architecture docs</text>
+  <circle cx="740.0" cy="620" r="26" fill="#7a5cc7" stroke="#7a5cc7" stroke-width="4"/>
+  <text x="740.0" y="630" font-size="28" font-weight="700" fill="#ffffff" text-anchor="middle">7</text>
+  <line x1="300.0" y1="646" x2="300.0" y2="662" stroke="#8a96b3" stroke-width="3"/>
+  <g filter="url(#shadow)"><rect x="100.0" y="662" width="400" height="250" rx="22" fill="#ffffff" stroke="#8a96b3" stroke-width="2" stroke-dasharray="10 8"/></g>
+  <text x="140.0" y="708" font-size="22" font-weight="600" fill="#8a96b3" letter-spacing="1">NEXT</text>
+  <text x="140.0" y="754" font-size="33" font-weight="700" fill="#0b1633">What&#x27;s next</text>
+  <circle cx="146.0" cy="794" r="4.5" fill="#8a96b3"/>
+  <text x="162.0" y="802" font-size="24" fill="#26324d">Host the backend</text>
+  <circle cx="146.0" cy="834" r="4.5" fill="#8a96b3"/>
+  <text x="162.0" y="842" font-size="24" fill="#26324d">Real map view</text>
+  <circle cx="146.0" cy="874" r="4.5" fill="#8a96b3"/>
+  <text x="162.0" y="882" font-size="24" fill="#26324d">Push notifications</text>
+  <circle cx="300.0" cy="620" r="26" fill="#ffffff" stroke="#8a96b3" stroke-width="4"/>
+  <text x="300.0" y="630" font-size="28" font-weight="700" fill="#8a96b3" text-anchor="middle">→</text>
+  <text x="960" y="1010" font-size="25" fill="#5b6780" text-anchor="middle">6 pull requests · C++ server + React Native app · real data only, no mocks</text>
+</svg>

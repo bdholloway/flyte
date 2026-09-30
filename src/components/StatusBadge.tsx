@@ -19,7 +19,7 @@ type StatusConfig = {
   iconColor: string;
 };
 
-export const STATUS_CONFIG: Record<FlightStatus, StatusConfig> = {
+const STATUS_CONFIG: Record<FlightStatus, StatusConfig> = {
   scheduled: {
     label: "Scheduled",
     textClass: "text-slate-400",

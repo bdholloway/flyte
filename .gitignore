@@ -43,3 +43,6 @@ $RECYCLE.BIN/
 server/build/
 server/CMakeUserPresets.json
 *.log
+
+# Claude Code (per-machine settings)
+.claude/settings.local.json
