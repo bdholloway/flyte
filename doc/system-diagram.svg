@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3b4763"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#0b1633" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <!-- background -->
+  <rect width="1920" height="1080" fill="#ffffff"/>
+
+  <!-- title -->
+  <text x="100" y="105" font-size="54" font-weight="700" fill="#0b1633">Flyte: System Architecture</text>
+  <text x="100" y="152" font-size="28" fill="#5b6780">From a flight search to live position data</text>
+
+  <!-- ================= MOBILE APP ================= -->
+  <g filter="url(#shadow)">
+    <rect x="100" y="215" width="430" height="745" rx="28" fill="#fff8ea" stroke="#f5a623" stroke-width="3"/>
+  </g>
+  <text x="315" y="280" font-size="38" font-weight="700" fill="#0b1633" text-anchor="middle">Mobile App</text>
+  <text x="315" y="322" font-size="25" fill="#5b6780" text-anchor="middle">React Native · Expo</text>
+
+  <!-- phone -->
+  <rect x="205" y="365" width="220" height="420" rx="34" fill="#0b1633"/>
+  <rect x="219" y="395" width="192" height="360" rx="20" fill="#16213f"/>
+  <rect x="285" y="377" width="60" height="8" rx="4" fill="#2a3656"/>
+  <!-- screens -->
+  <rect x="237" y="420" width="156" height="84" rx="14" fill="#f5a623"/>
+  <text x="315" y="471" font-size="23" font-weight="600" fill="#0b1633" text-anchor="middle">Search</text>
+  <path d="M315 510 v16" stroke="#8a96b3" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="237" y="532" width="156" height="84" rx="14" fill="#26335a"/>
+  <text x="315" y="572" font-size="21" font-weight="600" fill="#eef2f8" text-anchor="middle">Flight</text>
+  <text x="315" y="598" font-size="21" font-weight="600" fill="#eef2f8" text-anchor="middle">details</text>
+  <path d="M315 622 v16" stroke="#8a96b3" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="237" y="644" width="156" height="84" rx="14" fill="#26335a"/>
+  <circle cx="252" cy="686" r="7" fill="#34d399"/>
+  <text x="327" y="694" font-size="21" font-weight="600" fill="#eef2f8" text-anchor="middle">Live tracker</text>
+
+  <text x="315" y="848" font-size="24" fill="#0b1633" text-anchor="middle">TanStack Query</text>
+  <text x="315" y="884" font-size="24" fill="#0b1633" text-anchor="middle">Zod validation</text>
+  <text x="315" y="920" font-size="22" fill="#5b6780" text-anchor="middle">polls live data every 10 s</text>
+
+  <!-- ================= APP <-> SERVER ================= -->
+  <line x1="538" y1="555" x2="690" y2="555" stroke="#3b4763" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="614" y="537" font-size="23" font-weight="600" fill="#0b1633" text-anchor="middle">HTTP request</text>
+  <line x1="690" y1="615" x2="538" y2="615" stroke="#3b4763" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="614" y="652" font-size="23" font-weight="600" fill="#0b1633" text-anchor="middle">JSON</text>
+
+  <!-- ================= SERVER ================= -->
+  <g filter="url(#shadow)">
+    <rect x="700" y="215" width="560" height="745" rx="28" fill="#eef2fa" stroke="#1a2540" stroke-width="3"/>
+  </g>
+  <text x="980" y="280" font-size="38" font-weight="700" fill="#0b1633" text-anchor="middle">Flyte Server</text>
+  <text x="980" y="322" font-size="25" fill="#5b6780" text-anchor="middle">C++17 · cpp-httplib · Docker</text>
+
+  <!-- REST API -->
+  <rect x="745" y="360" width="470" height="100" rx="16" fill="#ffffff" stroke="#c5cde0" stroke-width="2"/>
+  <text x="980" y="402" font-size="27" font-weight="700" fill="#0b1633" text-anchor="middle">REST API</text>
+  <text x="980" y="438" font-size="22" fill="#5b6780" text-anchor="middle" font-family="Consolas, Menlo, monospace">/flights/:id   ·   /flights/:id/live</text>
+
+  <path d="M980 466 v20" stroke="#8a96b3" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- Merge -->
+  <rect x="745" y="492" width="470" height="100" rx="16" fill="#ffffff" stroke="#c5cde0" stroke-width="2"/>
+  <text x="980" y="534" font-size="27" font-weight="700" fill="#0b1633" text-anchor="middle">Merge Service</text>
+  <text x="980" y="570" font-size="22" fill="#5b6780" text-anchor="middle">schedule + live position → one response</text>
+
+  <path d="M980 598 v20" stroke="#8a96b3" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- Cache -->
+  <rect x="745" y="624" width="470" height="100" rx="16" fill="#ffffff" stroke="#c5cde0" stroke-width="2"/>
+  <text x="980" y="666" font-size="27" font-weight="700" fill="#0b1633" text-anchor="middle">TTL Cache</text>
+  <text x="980" y="702" font-size="22" fill="#5b6780" text-anchor="middle">schedules 45 s  ·  positions 5 s</text>
+
+  <path d="M860 730 v20" stroke="#8a96b3" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M1100 730 v20" stroke="#8a96b3" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- API clients -->
+  <rect x="745" y="756" width="228" height="92" rx="16" fill="#ffffff" stroke="#c5cde0" stroke-width="2"/>
+  <text x="859" y="795" font-size="23" font-weight="700" fill="#0b1633" text-anchor="middle">AeroDataBox</text>
+  <text x="859" y="827" font-size="22" fill="#5b6780" text-anchor="middle">client</text>
+  <rect x="987" y="756" width="228" height="92" rx="16" fill="#ffffff" stroke="#c5cde0" stroke-width="2"/>
+  <text x="1101" y="795" font-size="23" font-weight="700" fill="#0b1633" text-anchor="middle">OpenSky</text>
+  <text x="1101" y="827" font-size="22" fill="#5b6780" text-anchor="middle">client</text>
+
+  <!-- key note -->
+  <text x="980" y="910" font-size="23" fill="#0b1633" text-anchor="middle">🔑  holds all API keys</text>
+
+  <!-- ================= SERVER -> APIs ================= -->
+  <line x1="1268" y1="380" x2="1432" y2="380" stroke="#3b4763" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="1350" y="362" font-size="21" font-weight="600" fill="#0b1633" text-anchor="middle">HTTPS + key</text>
+
+  <line x1="1268" y1="600" x2="1432" y2="600" stroke="#3b4763" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="1350" y="582" font-size="21" font-weight="600" fill="#0b1633" text-anchor="middle">HTTPS + token</text>
+
+  <line x1="1268" y1="815" x2="1432" y2="815" stroke="#3b4763" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="1350" y="797" font-size="21" font-weight="600" fill="#0b1633" text-anchor="middle">OAuth2 login</text>
+
+  <!-- ================= EXTERNAL APIs ================= -->
+  <text x="1630" y="250" font-size="30" font-weight="700" fill="#0b1633" text-anchor="middle">External APIs</text>
+
+  <g filter="url(#shadow)">
+    <rect x="1440" y="290" width="380" height="180" rx="22" fill="#ffffff" stroke="#c5cde0" stroke-width="2"/>
+  </g>
+  <rect x="1440" y="290" width="14" height="180" rx="7" fill="#f5a623"/>
+  <text x="1650" y="350" font-size="31" font-weight="700" fill="#0b1633" text-anchor="middle">AeroDataBox</text>
+  <text x="1650" y="385" font-size="22" fill="#5b6780" text-anchor="middle">via RapidAPI</text>
+  <text x="1650" y="432" font-size="24" fill="#0b1633" text-anchor="middle">schedules · gates · status</text>
+
+  <g filter="url(#shadow)">
+    <rect x="1440" y="510" width="380" height="180" rx="22" fill="#ffffff" stroke="#c5cde0" stroke-width="2"/>
+  </g>
+  <rect x="1440" y="510" width="14" height="180" rx="7" fill="#34a0d8"/>
+  <text x="1650" y="570" font-size="31" font-weight="700" fill="#0b1633" text-anchor="middle">OpenSky Network</text>
+  <text x="1650" y="605" font-size="22" fill="#5b6780" text-anchor="middle">live ADS-B data</text>
+  <text x="1650" y="652" font-size="24" fill="#0b1633" text-anchor="middle">altitude · speed · heading</text>
+
+  <g filter="url(#shadow)">
+    <rect x="1440" y="740" width="380" height="150" rx="22" fill="#ffffff" stroke="#c5cde0" stroke-width="2"/>
+  </g>
+  <rect x="1440" y="740" width="14" height="150" rx="7" fill="#8a96b3"/>
+  <text x="1650" y="802" font-size="29" font-weight="700" fill="#0b1633" text-anchor="middle">OpenSky Auth</text>
+  <text x="1650" y="845" font-size="24" fill="#0b1633" text-anchor="middle">access token</text>
+
+  <!-- footer -->
+  <text x="960" y="1030" font-size="25" fill="#5b6780" text-anchor="middle">The app only talks to Flyte Server. API keys never ship inside the app.</text>
+</svg>
